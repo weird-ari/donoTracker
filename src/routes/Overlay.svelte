@@ -2,6 +2,7 @@
 	export let data = {
 		totalDonoAmount: 0.0,
 	};
+
 	let cachedData = JSON.parse(window.localStorage.getItem("donoTracker"));
 	//console.log(cachedData["totalDonoAmount"]);
 
@@ -41,6 +42,15 @@
 			"roshtein",
 			"hasanabi",
 			"juansguarnizo",
+			"kaicenat",
+			"xqc",
+			"tarik",
+			"cdawgva",
+			"yourragegaming",
+			"luquet4",
+			"loltyler1",
+			"summit1g",
+			"kyedae",
 		],
 	});
 	twitchClient.connect();
@@ -71,6 +81,13 @@
 			addSub(userstate["msg-param-sub-plan"]);
 		}
 	);
+
+	twitchClient.on("cheer", (channel, userstate, message) => {
+		//let senderCount = ~~userstate["msg-param-sender-count"];
+		let bits = userstate.bits;
+		console.log(bits);
+		addDono(bits / 100.0);
+	});
 </script>
 
 <main>Donos: ${data["totalDonoAmount"].toFixed(2)}</main>
