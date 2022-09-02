@@ -14,6 +14,7 @@
 
     let descriptors = {
         channel: "Twitch channel:",
+        socketToken: "Streamlabs API Socket Token:",
         currentValue: "Current Value:",
         goal: "Donation Goal:",
         primeValue: "Value of Prime Sub:",
@@ -47,7 +48,7 @@
     <setting>
         <descriptor> {descriptors[setting] || setting + ":"} </descriptor>
         <input
-            type="number"
+            type="text"
             bind:value={settings[setting]}
             on:change={saveSettings}
         />

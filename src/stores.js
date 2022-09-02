@@ -1,7 +1,8 @@
 import { writable } from 'svelte/store';
 
 export const settingsStore = writable({
-    channel: "NoticeTheZ",
+    channel: "noticethez",
+    socketToken: '',
     goal: 2500,
     primeValue: 2.5,
     t1Value: 2.5,
