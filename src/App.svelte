@@ -69,7 +69,7 @@
         saveCurrentValue();
     }
 
-    function addSub(plan) {
+    function addSub(plan, months) {
         let ratio = 0;
         if (plan === "Prime") {
             ratio = settings["primeValue"];
@@ -80,7 +80,12 @@
         } else if (plan === "3000") {
             ratio = settings["t3Value"];
         }
-        addDono(parseFloat(ratio));
+        console.log(months);
+        if (months) {
+            addDono(parseInt(months) * parseFloat(ratio));
+        } else {
+            addDono(parseFloat(ratio));
+        }
     }
 
     //Connect to socket
@@ -98,8 +103,15 @@
         //Perform Action on event
         streamlabs.on("event", (eventData) => {
             if (eventData.type === "donation") {
-                //console.log(eventData.message[0]);
-                addDono(eventData.message[0]["amount"]);
+                console.log(eventData.message[0]);
+                if (eventData.message[0]["isTest"]) {
+                    document.body.classList.add("test");
+                    setInterval(() => {
+                        document.body.classList.remove("test");
+                    }, 3000);
+                } else {
+                    addDono(eventData.message[0]["amount"]);
+                }
             }
         });
     }
@@ -115,21 +127,35 @@
         twitchClient.connect().then(() => console.log("CONNECTED"));
 
         twitchClient.on("message", async (channel, tags, message, self) => {
+            if (tags.mod && message.toLowerCase() === "testdonotracker") {
+                document.body.classList.add("testTwitch");
+                setInterval(() => {
+                    document.body.classList.remove("testTwitch");
+                }, 3000);
+            }
             //console.log(message);
         });
 
         twitchClient.on(
             "subscription",
             (channel, username, method, message, userstate) => {
-                addSub(userstate["msg-param-sub-plan"]);
+                console.log(userstate);
+                addSub(
+                    userstate["msg-param-sub-plan"],
+                    userstate["msg-param-months"]
+                );
             }
         );
 
         twitchClient.on(
             "resub",
             (channel, username, months, message, userstate, methods) => {
+                console.log(userstate);
                 //let cumulativeMonths = ~~userstate["msg-param-cumulative-months"];
-                addSub(userstate["msg-param-sub-plan"]);
+                addSub(
+                    userstate["msg-param-sub-plan"],
+                    userstate["msg-param-months"]
+                );
             }
         );
 
@@ -143,8 +169,12 @@
                 methods,
                 userstate
             ) => {
+                console.log(userstate);
                 //let senderCount = ~~userstate["msg-param-sender-count"];
-                addSub(userstate["msg-param-sub-plan"]);
+                addSub(
+                    userstate["msg-param-sub-plan"],
+                    userstate["msg-param-months"]
+                );
             }
         );
 
@@ -158,3 +188,12 @@
 </script>
 
 <Router {routes} />
+
+<style>
+    :global(body.test) {
+        background-color: red;
+    }
+    :global(body.testTwitch) {
+        background-color: purple;
+    }
+</style>

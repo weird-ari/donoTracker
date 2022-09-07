@@ -29,15 +29,24 @@
             "donoTrackerSettings",
             JSON.stringify(settings)
         );
+        location.reload();
         console.log(settings);
     }
 
     function saveCurrentValue() {
         currentValueStore.set(currentValue);
         window.localStorage.setItem("donoTrackerCurrentValue", currentValue);
+        location.reload();
         console.log(currentValue);
     }
 </script>
+
+<button
+    type="button"
+    on:click={() => {
+        location.reload();
+    }}>refresh</button
+>
 
 <setting>
     <descriptor> Current Value: </descriptor>
